@@ -60,12 +60,12 @@ jobs:
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/cache@v3.0.11
         with: 
-         path: |
-          ~/.npm
-          ./node_modules
-          ./build
-        key: ${{ runner.os }}-build-${{ github.run_id }}
-        restore-keys: ${{ runner.os }}-build-${{ github.run_id }}
+          path: |
+            ~/.npm
+            ./node_modules
+            ./build
+          key: ${{ runner.os }}-build-${{ github.run_id }}
+          restore-keys: ${{ runner.os }}-build-${{ github.run_id }}
 
   Test:
     needs: Install
