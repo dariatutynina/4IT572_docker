@@ -18,10 +18,10 @@ jobs:
         uses: actions/setup-node@v3.5.1
         with:
           node-version: 10
-          
+
       - name: Cache node modules
         uses: actions/cache@v3.0.11
-        with: 
+        with:
           path: node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
           restore-keys: node_modules-
@@ -44,10 +44,10 @@ jobs:
         uses: actions/setup-node@v3.5.1
         with:
           node-version: 10
-          
+
       - name: Cache node modules
         uses: actions/cache@v3.0.11
-        with: 
+        with:
           path: node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
 
@@ -59,7 +59,7 @@ jobs:
       - name: Cache node modules and build folder
         if: ${{ github.ref == 'refs/heads/master' }}
         uses: actions/cache@v3.0.11
-        with: 
+        with:
           path: |
             ~/.npm
             ./node_modules
@@ -81,10 +81,10 @@ jobs:
         uses: actions/setup-node@v3.5.1
         with:
           node-version: 10
-          
+
       - name: Cache node modules
         uses: actions/cache@v3.0.11
-        with: 
+        with:
           path: node_modules
           key: node_modules-${{ hashFiles('**/package-lock.json') }}
 
@@ -102,19 +102,23 @@ jobs:
       - name: Code checkout
         uses: actions/checkout@v2.5.0
         with:
-          token: ${{ secrets.WORKFLOW_TOKEN }}  
+          token: ${{ secrets.WORKFLOW_TOKEN }}
 
-      - name: Load Node modules and build folder 
-        uses: actions/cache@v3.0.11
-        with: 
-          path: |
-            ~/.npm
-            ./node_modules
-            ./build
-          key: ${{ runner.os }}-build-${{ github.run_id }}
-
-      - name: Deploy to Firebase
-        uses: lowply/deploy-firebase@v0.0.5
+      - name: Play ansible-playbook command with SSH Private Key
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook ~/4IT572_ansible/ansible/ec2_deploy_full.yml --vault-password-file ~/pass.txt --user ubuntu --key-file ~/dasha.pem
+          host: ${{ secrets.HOST }}
+          username: ubuntu
+          privateKey: ${{ secrets.PRIVATE_KEY}}
         env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-          FIREBASE_PROJECT: tutynina-devops
+          CI: true
+
+#      - name: Load Node modules and build folder
+#        uses: actions/cache@v3.0.11
+#        with:
+#          path: |
+#            ~/.npm
+#            ./node_modules
+#            ./build
+#          key: ${{ runner.os }}-build-${{ github.run_id }}
